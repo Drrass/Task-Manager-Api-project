@@ -2,38 +2,28 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const helmet = require('helmet');
-const { sequelize } = require('./models');
-const userRoutes = require('./routes/userRoutes');
+const { sequelize } = require('./models')
 const authRoutes = require('./routes/authRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 
-const app = express();
+const app =express();
 const port = process.env.PORT || 3000;
 
-// Security Middleware
-app.use(helmet());
 app.use(cors());
 
-// Body Parser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Remove default X-Powered-By header
-app.disable('x-powered-by');
-
-// Welcome route
-app.get('/', (req, res) => {
-  res.status(200).json({ 
-    status: 'success',
-    message: 'Welcome to the Task Management API' 
-  });
-});
+app.get('/' , (req, res, )=>{
+  res.status(200).json({
+    status:'success',
+    message: 'Welcome to the task management Api'
+  })
+})
 
 // Routes
 app.use('/auth', require('./routes/authRoutes'));
 app.use('/tasks', require('./routes/taskRoutes'));
-app.use('/api/users', userRoutes);
 app.use('/api/users', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
@@ -54,13 +44,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Database Connection
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 module.exports = app;

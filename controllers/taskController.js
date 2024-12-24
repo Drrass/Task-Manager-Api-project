@@ -18,22 +18,24 @@ const createTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
   try {
-    const { priority, status, sortBy } = req.query;
-    let query = { where: { userId: req.user.id } };
-    
-    // I will  Add filters if provided
-    if (priority) query.where.priority = priority;
-    if (status) query.where.status = status;
-    
-    // I will Add sorting if provided
-    if (sortBy) {
-      query.order = [[sortBy, 'ASC']];
-    }
+    const userId = req.user.id;
 
-    const tasks = await Task.findAll(query);
-    res.json(tasks);
+    const tasks = await Task.findAll({
+      where: { userId },
+      attributes: ['id', 'title', 'description', 'priority', 'dueDate', 'status', 'createdAt', 'updatedAt'],
+      order: [['createdAt', 'DESC']],
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: tasks,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+    console.error('Error fetching tasks:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error while fetching tasks',
+    });
   }
 };
 
