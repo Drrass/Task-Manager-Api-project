@@ -27,27 +27,19 @@ app.use('/tasks', require('./routes/taskRoutes'));
 app.use('/api/users', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// 404 Handler
-app.use((req, res, next) => {
-  res.status(404).json({
-    status: 'error',
-    message: 'Route not found'
+
+
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Database connected successfully!');
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error.message);
   });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    status: 'error',
-    message: 'Something went wrong!'
-  });
-});
-
-
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 module.exports = app;

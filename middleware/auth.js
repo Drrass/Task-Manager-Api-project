@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const JWT_SECRET = 'yX9ifExqtfG5K8YgUQ0tJVgNKjFz1c9YpDRO3D/38Ng=';
+const JWT_SECRET = process.env.JWT_SECRET;;
 
 const authenticateToken = async (req, res, next) => {
   try {
